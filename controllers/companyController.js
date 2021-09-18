@@ -1,11 +1,23 @@
 const Company = require('../models/companyModel')
 const Category = require('../models/categoryModel')
+const fs = require('fs')
+// const multer = require('multer')
 
+// const upload = multer({dest: 'images/'})
 
 
 
 
 const createCompany = async (req,res)=>{
+
+    // if image is sent, its path is added to the body
+    if(typeof(req.file)!=='undefined'){
+        req.body.image = req.file.path
+        console.log(req.body)
+    }
+   
+    // console.log(req.body)
+
     let category_id = req.body.category_id
 
     try{
@@ -35,6 +47,11 @@ const createCompany = async (req,res)=>{
 
 
 const updateCompany = async (req,res) => {
+
+    if(typeof(req.file)!=='undefined'){
+        req.body.image = req.file.path
+    }
+
     try{
 
         // verifying the category
@@ -69,11 +86,13 @@ const updateCompany = async (req,res) => {
 
 
 const getCompany = async (req,res) => {
+  
     try{
-    const companyData  = await Company.find()
+    const {page=1} = req.query
+    let companyData  = await Company.find().populate('category').limit(10).skip((page-1)*10)
 
     res.json({
-        message: "Data Extraction Successful",
+        message: "Successful",
         data: companyData
     })
     }
@@ -91,7 +110,7 @@ const getCompanyById = async (req,res) => {
    
    
     try{
-        const companyData = await Company.find({id:req.params.id})
+        let companyData  = await Company.find({id:req.params.id}).populate('category')
         if(companyData.length===0){
             res.json({
                 message: "No such data available"
@@ -115,16 +134,25 @@ const getCompanyById = async (req,res) => {
 const deleteCompany = async (req,res) => {
 
     try{
-        const companyData = await Company.deleteOne({id:req.params.id})
-      
-        if(companyData['deletedCount']===0){
-            res.json({
-                message: "No such data found"
-            })
-        }
+        const companyData = await Company.findOneAndRemove({id:req.params.id})
+        if(companyData===null)
+            {
+                res.json({message:"No such data available"})
+            }
         else{
+            if(companyData.image){
+                fs.unlink(companyData.image,err=> {
+                   if(err){
+                       console.log(err)
+                   }
+                   else{
+                       console.log("image deleted")
+                   }
+                })
+            }
             res.json({message:"Data Deleted",companyData})
         }
+       
  
     }
     catch(err){

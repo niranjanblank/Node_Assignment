@@ -9,7 +9,7 @@ const companyRouter = require('./routers/companyRouter')
 
 const app = express()
 app.use(express.json())
-
+app.use('/images',express.static('images'))
 // getting the values from env file
 const db = process.env.DB_LOCATION
 const port = process.env.PORT

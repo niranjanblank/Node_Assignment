@@ -34,9 +34,17 @@ const companySchema = new mongoose.Schema({
         createdAt: 'created_at',
         updatedAt: 'updated_at'
     },
+    toObject: {virtuals:true},
+    toJSON: {virtuals:true} 
     
 })
 
+companySchema.virtual('category', {
+    ref: 'Category',
+    localField : 'category_id',
+    foreignField: 'id',
+    justOne: true
+})
 
 const Company = mongoose.model('Company', companySchema)
 

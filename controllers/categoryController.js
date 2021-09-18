@@ -21,9 +21,10 @@ const createCategory = async (req,res) => {
 
 const getCategory = async (req,res) => {
     
-    const categoryData = await Category.find()
-
     try{
+        // page no to show data for pagination
+        const {page=1} = req.query
+        const categoryData = await Category.find().limit(10).skip((page-1)*10)
         res.json(categoryData)
     }
     catch(err){
@@ -87,12 +88,10 @@ const updateCategory = async (req,res) => {
 const deleteCategory = async (req,res) => {
 
     try{
-        const categoryData = await Category.deleteOne({id:req.params.id})
+        const categoryData = await Category.findOneAndRemove({id:req.params.id})
       
-        if(categoryData['deletedCount']===0){
-            res.json({
-                message: "No such data found"
-            })
+        if(categoryData===null){
+            res.json({message:"No such data available"})
         }
         else{
             res.json({message:"Data Deleted",categoryData})
