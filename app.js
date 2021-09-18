@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 require('dotenv').config()
-
+const checkAPI = require('./middleware/checkAPI')
 const categoryRouter = require('./routers/categoryRouter')
 const companyRouter = require('./routers/companyRouter')
 
@@ -13,6 +13,9 @@ app.use('/images',express.static('images'))
 // getting the values from env file
 const db = process.env.DB_LOCATION
 const port = process.env.PORT
+
+// middleware to check api key from header
+app.use(checkAPI)
 
 // routes
     // For category
