@@ -9,7 +9,9 @@ const companyRouter = require('./routers/companyRouter')
 
 const app = express()
 app.use(express.json())
+
 app.use('/images',express.static('images'))
+
 // getting the values from env file
 const db = process.env.DB_LOCATION
 const port = process.env.PORT
@@ -18,18 +20,19 @@ const port = process.env.PORT
 app.use(checkAPI)
 
 // routes
-    // For category
+// For category
 app.use('/api/category',categoryRouter)
-    // For company
+// For company
 app.use('/api/company',companyRouter)
 
 
-// connecting to router
+// connecting to db
 mongoose.connect(db, {useNewUrlParser: true})
 .then(
     console.log('DB Connected')
 ).catch(err => console.log(err))
 
+// running the server of port
 app.listen(port, ()=>{
     console.log(`App running on port ${port}`)
 })

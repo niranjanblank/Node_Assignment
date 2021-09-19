@@ -1,13 +1,11 @@
 const Company = require('../models/companyModel')
 const Category = require('../models/categoryModel')
 const fs = require('fs')
-// const multer = require('multer')
-
-// const upload = multer({dest: 'images/'})
 
 
 
 
+// create a company
 const createCompany = async (req,res)=>{
 
     // if image is sent, its path is added to the body
@@ -15,9 +13,7 @@ const createCompany = async (req,res)=>{
         req.body.image = req.file.path
         console.log(req.body)
     }
-   
-    // console.log(req.body)
-
+ 
     let category_id = req.body.category_id
 
     try{
@@ -45,10 +41,11 @@ const createCompany = async (req,res)=>{
 
 }
 
-
+// update company data
 const updateCompany = async (req,res) => {
 
     if(typeof(req.file)!=='undefined'){
+        // if image is added, its path will be added
         req.body.image = req.file.path
     }
 
@@ -84,7 +81,7 @@ const updateCompany = async (req,res) => {
 
 }
 
-
+// get company details of company with pagination of 10
 const getCompany = async (req,res) => {
   
     try{
@@ -105,7 +102,7 @@ const getCompany = async (req,res) => {
 
 }
 
-
+// get details of a single company
 const getCompanyById = async (req,res) => {
    
    
@@ -131,6 +128,7 @@ const getCompanyById = async (req,res) => {
     }
 }
 
+// delete company
 const deleteCompany = async (req,res) => {
 
     try{
@@ -141,6 +139,7 @@ const deleteCompany = async (req,res) => {
             }
         else{
             if(companyData.image){
+                // if company image exists, delete it from filesystem
                 fs.unlink(companyData.image,err=> {
                    if(err){
                        console.log(err)

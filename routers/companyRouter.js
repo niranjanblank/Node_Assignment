@@ -6,6 +6,7 @@ const multer = require('multer')
 const companyController = require('../controllers/companyController')
 const router = express.Router()
 
+// configuration for storing the image
 const storage = multer.diskStorage({
     destination: function(req,file, cb){
         cb(null ,'./images')
